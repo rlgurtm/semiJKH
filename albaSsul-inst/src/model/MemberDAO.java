@@ -4,7 +4,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+
 import javax.sql.DataSource;
+
 
 public class MemberDAO {
 	private static MemberDAO instance = new MemberDAO();
@@ -42,7 +44,7 @@ public class MemberDAO {
 		ResultSet rs = null;
 		try {
 			con = getConnection();
-			String sql = "select memberid,password,name,nickname from alba_member where memberid=? and password=?";
+			String sql = "select member_id,password,name,nickname from alba_member where member_id=? and password=?";
 			pstmt = con.prepareStatement(sql);
 			pstmt.setString(1, memberId);
 			pstmt.setString(2, password);
@@ -63,7 +65,7 @@ public class MemberDAO {
 		ResultSet rs = null;
 		try {
 			con = getConnection();
-			String sql = "select memberid from alba_member where memberid=?";
+			String sql = "select member_id from alba_member where member_id=?";
 			pstmt = con.prepareStatement(sql);
 			pstmt.setString(1, memberId);
 			rs = pstmt.executeQuery();
@@ -76,15 +78,35 @@ public class MemberDAO {
 		return id;
 	}
 	
+	public String findNickName(String nickName) throws SQLException {
+		String	nick = null;
+		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try {
+			con = getConnection();
+			String sql = "select nickname from alba_member where nickname=?";
+			pstmt = con.prepareStatement(sql);
+			pstmt.setString(1, nickName);
+			rs = pstmt.executeQuery();
+			if (rs.next()){
+				nick=rs.getString(1);
+			}
+		} finally {
+			closeAll(rs, pstmt, con);
+		}
+		return nick;
+	}
+	
 	public void registration(MemberVO vo) throws SQLException {
 		Connection con = null;
 		PreparedStatement pstmt = null;
 		try {
 			con = getConnection();
-			String sql = "insert into alba_member(memberid,name,address,tel,residentnumber,gender,password,nickname)"
+			String sql = "insert into alba_member(member_id,name,address,tel,residentnumber,gender,password,nickname)"
 					+ " values(?,?,?,?,?,?,?,?)";
 			pstmt = con.prepareStatement(sql);
-			pstmt.setString(1, vo.getMemberId());
+			pstmt.setString(1, vo.getMember_Id());
 			pstmt.setString(2, vo.getName());
 			pstmt.setString(3, vo.getAddress());
 			pstmt.setString(4, vo.getTel());
@@ -98,5 +120,20 @@ public class MemberDAO {
 			closeAll(pstmt, con);
 		}
 	}
-
+	
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

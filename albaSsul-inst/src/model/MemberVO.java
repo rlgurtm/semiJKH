@@ -1,7 +1,7 @@
 package model;
 
 public class MemberVO {
-	private String memberId;
+	private String member_Id;
 	private String password;
 	private String name;
 	private String residentNumber;
@@ -13,18 +13,18 @@ public class MemberVO {
 		super();
 	}
 	
-	public MemberVO(String memberId, String password, String name, String nickName) {
+	public MemberVO(String member_Id, String password, String name, String nickName) {
 		super();
-		this.memberId = memberId;
+		this.member_Id = member_Id;
 		this.password = password;
 		this.name = name;
 		this.nickName = nickName;
 	}
 
-	public MemberVO(String memberId, String password, String name, String residentNumber, String gender,
+	public MemberVO(String member_Id, String password, String name, String residentNumber, String gender,
 			String nickName, String tel, String address) {
 		super();
-		this.memberId = memberId;
+		this.member_Id = member_Id;
 		this.password = password;
 		this.name = name;
 		this.residentNumber = residentNumber;
@@ -33,11 +33,11 @@ public class MemberVO {
 		this.tel = tel;
 		this.address = address;
 	}
-	public String getMemberId() {
-		return memberId;
+	public String getMember_Id() {
+		return member_Id;
 	}
-	public void setMemberId(String memberId) {
-		this.memberId = memberId;
+	public void setMember_Id(String member_Id) {
+		this.member_Id = member_Id;
 	}
 	public String getPassword() {
 		return password;
@@ -83,7 +83,7 @@ public class MemberVO {
 	}
 	@Override
 	public String toString() {
-		return "MemberVO [memberId=" + memberId + ", password=" + password + ", name=" + name + ", residentNumber="
+		return "MemberVO [member_Id=" + member_Id + ", password=" + password + ", name=" + name + ", residentNumber="
 				+ residentNumber + ", gender=" + gender + ", nickName=" + nickName + ", tel=" + tel + ", address="
 				+ address + "]";
 	}

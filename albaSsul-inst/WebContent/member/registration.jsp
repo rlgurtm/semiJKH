@@ -73,16 +73,20 @@ input[type=submit]:hover {
 		var findId = document.getElementById("memberIdDuplication");
 		var findPass = document.getElementById("passwordDuplication");
 		var gd = document.regForm.gender;
+		var findNick = document.getElementById("nickDuplication");
 		// alert(findId.innerText);
 		// alert(findPass.innerText);
 		if(gd.value==""){
 			alert("성별을 선택하세요.");
 			return false;
-		}else if(findId.innerText=="사용불가합니다."){
+		} else if(findId.innerText=="사용불가합니다."){
 			alert("아이디 중복 확인해주세요");
 			return false;
 		} else if(findPass.innerText=="비밀번호가 맞지않습니다."){
 			alert("비밀번호 확인해주세요");
+			return false;
+		} else if(findNick.innerText=="사용불가합니다."){
+			alert("닉네임 중복확인해주세요");
 			return false;
 		}
 		
@@ -112,6 +116,25 @@ input[type=submit]:hover {
 			da.value="";
 			da.focus();
 		}
+	}
+	function nickNameChecking(){
+		var nn = document.getElementById("nickChecking");
+		xhr = new XMLHttpRequest();
+		xhr.onreadystatechange = function(){
+			if(xhr.readyState==4&&xhr.status==200){
+				var nickChecking = JSON.parse(xhr.responseText);
+				if(nickChecking==false){
+					document.getElementById("nickDuplication").innerHTML = 
+						"사용불가합니다.";
+				} else {
+					document.getElementById("nickDuplication").innerHTML = 
+						"사용가능한 닉네임입니다.";
+				}
+			}
+		}
+		xhr.open("post","${ pageContext.request.contextPath }/DispatcherServlet");
+		xhr.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+		xhr.send("command=findNickName&nickName="+nn.value);
 	}
 </script>
 </head>
@@ -165,8 +188,11 @@ input[type=submit]:hover {
 			</tr>
 			<tr>
 				<td>닉네임</td>
-				<td><input type="text" name="nickName" placeholder="닉네임" required="required">
+				<td><input onchange="nickNameChecking()" id="nickChecking" type="text" name="nickName" placeholder="닉네임" required="required">
 				</td>
+			</tr>
+			<tr>
+			<td id="nickDuplication" colspan="2" align="right"></td>
 			</tr>
 			<tr>
 				<td>전화번호</td>

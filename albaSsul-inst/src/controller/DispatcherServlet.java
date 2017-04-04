@@ -1,6 +1,7 @@
 package controller;
 
 import java.io.IOException;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -13,54 +14,44 @@ import javax.servlet.http.HttpServletResponse;
 @WebServlet("/DispatcherServlet")
 public class DispatcherServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
+       
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
+    public DispatcherServlet() {
+        super();
+        // TODO Auto-generated constructor stub
+    }
 
-	/**
-	 * @see HttpServlet#HttpServlet()
-	 */
-	public DispatcherServlet() {
-		super();
-		// TODO Auto-generated constructor stub
-	}
-
-	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+  	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		requestProcess(request, response);
 	}
-
-	protected void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		request.setCharacterEncoding("utf-8");
 		requestProcess(request, response);
 	}
-
 	/**
-	 * 1. client 요청분석 2. HandlerMapping(Factory)를 이용해 컨트롤러 구현체 생성을 의뢰하여
-	 * Controller Interface type으로 반환받는다 3. 개별 컨트롤러 구현체의 컨트롤러 메서드(execute)를 실행한다
-	 * 4. 예외처리 try catch 를 작성하고 예외발생시 서버상에서 메세지 출력하고 error.jsp로 응답한다(redirect)
-	 * 5. 컨트롤러 메서드 실행 후 반환되는 url에 의거 forward 또는 redirect 방식으로 이동시킨다.
-	 * 
-	 * @param request
-	 * @param response
-	 * @throws ServletException
-	 * @throws IOException
-	 */
-	public void requestProcess(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		String command = request.getParameter("command");
-		Controller controller = HandlerMapping.getInstance().create(command);
-		try {
-			String url = controller.execute(request, response);
-			if (url.equalsIgnoreCase("AjaxView")) {
-				return;
-			}
-			if (url.startsWith("redirect:")) {
-				response.sendRedirect(url.trim().substring(9));
-			} else {
+	 * client의 command를 반환받는다
+	 * HandlerMapping을 이용해 컨트롤러 구현체를 반환받는다 
+	 * 컨트롤러 구현체의 표준화된 메서드를 실행한 후 
+	 * 반환되는 url 정보를 받는다. 
+	 * 컨트롤러 구현체가 명시한 이동방식과 url 에 의거해 
+	 * View로 이동한다 ( redirect or forward ) 
+	 * 컨트롤러 구현체가 실행되는 도중에 발생되는 모든 Exception에
+	 * 대해 error.jsp로 redirect 하도록 처리한다. 
+	 */  
+	public void requestProcess(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		try{
+			String command=request.getParameter("command");
+			Controller c=HandlerMapping.getInstance().create(command);
+			String url=c.execute(request, response);			
+			if(url.startsWith("redirect:"))
+				response.sendRedirect(url.substring(9));
+			else
 				request.getRequestDispatcher(url).forward(request, response);
-			}
-		} catch (Exception e) {
+		}catch(Exception e){
 			e.printStackTrace();
 			response.sendRedirect("error.jsp");
-		}
+		}			
 	}
 }
